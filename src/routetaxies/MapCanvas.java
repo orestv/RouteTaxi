@@ -17,8 +17,7 @@ public class MapCanvas extends JPanel{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.setColor(Color.white);
-        g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        this.setBackground(Color.white);
         g.setColor(Color.red);
         g.drawLine(5, 5, 150, 150);
     }
