@@ -20,10 +20,14 @@ import javax.swing.JPanel;
  */
 public class MapCanvas extends JPanel implements MouseListener, MouseMotionListener{
 
-    private double longitude_left = 23.91;
-    private double longitude_right = 24.1;
-    private double latitude_bottom = 49.76;
-    private double latitude_top = 49.82;
+    private double longitudeLeft = 23.91;
+    private double longitudeRight = 24.1;
+    private double latitudeBottom = 49.76;
+    private double latitudeTop = 49.82;
+
+    private int mouseDownX, mouseDownY;
+
+    private int mouseX, mouseY;
 
     public MapCanvas(){
         addMouseMotionListener(this);
@@ -34,6 +38,9 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        double latitude = yToLatitude(mouseY);
+        double longitude = xToLongitude(mouseX);
+        g.drawString(String.format("(%.6f; %.6f)", latitude, longitude), 10, 10);
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -41,7 +48,8 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     }
 
     public void mousePressed(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        this.mouseDownX = e.getX();
+        this.mouseDownY = e.getY();
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -57,85 +65,84 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     }
 
     public void mouseDragged(MouseEvent e) {
-        //System.out.println(String.format("Drag: %d, %d", e.getX(), e.getY()));
+        int x = e.getX(), y = e.getY();
+        double dLongitude = xToLongitude(x) - xToLongitude(this.mouseDownX);
+        double dLatitude = yToLatitude(y) - yToLatitude(this.mouseDownY);
+        this.setLatitude_bottom(this.getLatitude_bottom() + dLatitude);
     }
 
     public void mouseMoved(MouseEvent e) {
-        double longitude = xToLongitude(e.getX()),
-                latitude = yToLatitude(e.getY());
-        System.out.println(Double.toString(longitude) + "; " +  Double.toString(latitude));
-        int x = longitudeToX(longitude),
-                y = latitudeToY(latitude);
-        System.out.println(Integer.toString(x) + "; " + Integer.toString(y));
-        System.out.println();
+        mouseX = e.getX();
+        mouseY = e.getY();
+        this.repaint();
         //System.out.println(xToLongitude(e.getX()));
         //System.out.println(yToLatitude(e.getY()));
     }
 
-    private double xToLongitude(int x){
-        double result = ((double)x) / getWidth();
+// <editor-fold defaultstate="collapsed" desc="Coordinate transformation functions">
+    private double xToLongitude(int x) {
+        double result = ((double) x) / getWidth();
         result *= (getLongitude_right() - getLongitude_left());
         result += getLongitude_left();
         return result;
     }
 
-    private double yToLatitude(int y){
-        double result = 1 - ((double)y) / getHeight();
+    private double yToLatitude(int y) {
+        double result = 1 - ((double) y) / getHeight();
         result *= (getLatitude_top() - getLatitude_bottom());
         result += getLatitude_bottom();
         return result;
     }
 
-    private int longitudeToX(double longitude){
+    private int longitudeToX(double longitude) {
         double result = (longitude - getLongitude_left()) / (getLongitude_right() - getLongitude_left());
         result *= this.getWidth();
-        return (int)result;
+        return (int) result;
     }
 
-    private int latitudeToY(double latitude){
+    private int latitudeToY(double latitude) {
         double result = (latitude - getLatitude_bottom()) / (getLatitude_top() - getLatitude_bottom());
         result *= this.getHeight();
         result = this.getHeight() - result;
-        return (int)result;
+        return (int) result;
     }
 
-    private Point degreesToXY(double latitude, double longitude){
+    private Point degreesToXY(double latitude, double longitude) {
         Point pt = new Point();
         pt.y = (int) (((getLatitude_top() - latitude) / (getLatitude_top() - getLatitude_bottom())) * (this.getHeight()));
-        pt.x = (int)((longitude - getLongitude_left()) / (getLongitude_right() - getLongitude_left())) * (this.getWidth());
+        pt.x = (int) ((longitude - getLongitude_left()) / (getLongitude_right() - getLongitude_left())) * (this.getWidth());
         return pt;
-    }
-
+    }// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Coordinate getters and setters">
     public double getLatitude_bottom() {
-        return latitude_bottom;
+        return latitudeBottom;
     }
 
     public void setLatitude_bottom(double latitude_bottom) {
-        this.latitude_bottom = latitude_bottom;
+        this.latitudeBottom = latitude_bottom;
     }
 
     public double getLatitude_top() {
-        return latitude_top;
+        return latitudeTop;
     }
 
     public void setLatitude_top(double latitude_top) {
-        this.latitude_top = latitude_top;
+        this.latitudeTop = latitude_top;
     }
 
     public double getLongitude_left() {
-        return longitude_left;
+        return longitudeLeft;
     }
 
     public void setLongitude_left(double longitude_left) {
-        this.longitude_left = longitude_left;
+        this.longitudeLeft = longitude_left;
     }
 
     public double getLongitude_right() {
-        return longitude_right;
+        return longitudeRight;
     }
 
     public void setLongitude_right(double longitude_right) {
-        this.longitude_right = longitude_right;
-    }
-
+        this.longitudeRight = longitude_right;
+    }// </editor-fold>
 }
