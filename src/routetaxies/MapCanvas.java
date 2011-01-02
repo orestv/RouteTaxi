@@ -14,12 +14,15 @@ import javax.swing.JPanel;
  * @author seth
  */
 public class MapCanvas extends JPanel{
+
+    private double LONGITUDE_LEFT = 23.91;
+    private double LONGITUDE_RIGHT = 24.1;
+    private double LATITUDE_BOTTOM = 49.76;
+    private double LATITUDE_TOP = 49.82;
+
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        this.setBackground(Color.white);
-        g.setColor(Color.red);
-        g.drawLine(5, 5, 150, 150);
     }
 
 }
