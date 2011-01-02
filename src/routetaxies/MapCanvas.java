@@ -28,6 +28,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     public MapCanvas(){
         addMouseMotionListener(this);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        setBackground(Color.WHITE);
     }
 
     @Override
@@ -60,7 +61,42 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     }
 
     public void mouseMoved(MouseEvent e) {
-        //System.out.println(String.format("Move: %d, %d", e.getX(), e.getY()));
+        double longitude = xToLongitude(e.getX()),
+                latitude = yToLatitude(e.getY());
+        System.out.println(Double.toString(longitude) + "; " +  Double.toString(latitude));
+        int x = longitudeToX(longitude),
+                y = latitudeToY(latitude);
+        System.out.println(Integer.toString(x) + "; " + Integer.toString(y));
+        System.out.println();
+        //System.out.println(xToLongitude(e.getX()));
+        //System.out.println(yToLatitude(e.getY()));
+    }
+
+    private double xToLongitude(int x){
+        double result = ((double)x) / getWidth();
+        result *= (getLongitude_right() - getLongitude_left());
+        result += getLongitude_left();
+        return result;
+    }
+
+    private double yToLatitude(int y){
+        double result = 1 - ((double)y) / getHeight();
+        result *= (getLatitude_top() - getLatitude_bottom());
+        result += getLatitude_bottom();
+        return result;
+    }
+
+    private int longitudeToX(double longitude){
+        double result = (longitude - getLongitude_left()) / (getLongitude_right() - getLongitude_left());
+        result *= this.getWidth();
+        return (int)result;
+    }
+
+    private int latitudeToY(double latitude){
+        double result = (latitude - getLatitude_bottom()) / (getLatitude_top() - getLatitude_bottom());
+        result *= this.getHeight();
+        result = this.getHeight() - result;
+        return (int)result;
     }
 
     private Point degreesToXY(double latitude, double longitude){

@@ -25,7 +25,7 @@ public class MainWindow extends JFrame{
     }
 
     private void initGUI(){
-        JPanel p = new JPanel(new MigLayout("debug"));
+        JPanel p = new JPanel(new MigLayout(""));
         MapCanvas cnvMap = new MapCanvas();
         JPanel pnlControls = new JPanel();
         JPanel pnlStatus = new JPanel();
