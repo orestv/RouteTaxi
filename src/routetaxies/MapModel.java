@@ -97,12 +97,10 @@ public class MapModel {
         NodeList xmlNodes = doc.getElementsByTagName("node");
         HashMap<Long, Node> hmapXmlNodes = new HashMap<Long, Node>();
             System.out.println(Calendar.getInstance().getTimeInMillis());
-        for (int i = 0; i < xmlNodes.getLength(); i++){
-            
+        for (int i = 0; i < xmlNodes.getLength(); i++){            
             Node n = xmlNodes.item(i);
             Long id = Long.parseLong(n.getAttributes().getNamedItem("id").getNodeValue());
-            hmapXmlNodes.put(id, n);
-             
+            hmapXmlNodes.put(id, n);             
         }
             System.out.println(Calendar.getInstance().getTimeInMillis());
             System.out.println();

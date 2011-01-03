@@ -12,13 +12,15 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import javax.swing.JPanel;
 
 /**
  *
  * @author seth
  */
-public class MapCanvas extends JPanel implements MouseListener, MouseMotionListener{
+public class MapCanvas extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener{
 
     private double longitudeLeft = 23.91;
     private double longitudeRight = 24.1;
@@ -45,6 +47,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     private void init(){
         addMouseMotionListener(this);
         addMouseListener(this);
+        addMouseWheelListener(this);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setBackground(Color.WHITE);
     }
@@ -107,6 +110,37 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     public void setModel(MapModel model) {
         this.model = model;
     }
+
+    public void zoomIn(Point pivot){
+        double pivotLatitude, pivotLongitude;
+        pivotLatitude = yToLatitude((int)pivot.getY());
+        pivotLongitude = xToLongitude((int)pivot.getX());
+        double viewportWidth = this.getLongitude_right() - this.getLongitude_left();
+        double viewportHeight = this.getLatitude_top() - this.getLatitude_bottom();
+        viewportHeight /= 3;
+        viewportWidth /= 3;
+
+        this.setLongitude_left(pivotLongitude - viewportWidth/2);
+        this.setLongitude_right(pivotLongitude + viewportWidth/2);
+        this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
+        this.setLatitude_top(pivotLatitude + viewportHeight/2);
+    }
+
+    public void zoomOut(Point pivot){
+        double pivotLatitude, pivotLongitude;
+        pivotLatitude = yToLatitude((int)pivot.getY());
+        pivotLongitude = xToLongitude((int)pivot.getX());
+        double viewportWidth = this.getLongitude_right() - this.getLongitude_left();
+        double viewportHeight = this.getLatitude_top() - this.getLatitude_bottom();
+        viewportHeight *= 4./3;
+        viewportWidth *= 4./3;
+
+        this.setLongitude_left(pivotLongitude - viewportWidth/2);
+        this.setLongitude_right(pivotLongitude + viewportWidth/2);
+        this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
+        this.setLatitude_top(pivotLatitude + viewportHeight/2);
+    }
+
 // <editor-fold defaultstate="collapsed" desc="Coordinate transformation functions">
     private double xToLongitude(int x) {
         double result = ((double) x) / getWidth();
@@ -173,4 +207,11 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     public void setLongitude_right(double longitude_right) {
         this.longitudeRight = longitude_right;
     }// </editor-fold>
+
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getWheelRotation() < 0)
+            zoomIn(new Point(e.getX(), e.getY()));
+        else
+            zoomOut(new Point(e.getX(), e.getY()));
+    }
 }
