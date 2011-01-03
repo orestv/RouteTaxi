@@ -5,6 +5,7 @@
 
 package routetaxies;
 
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
@@ -14,6 +15,15 @@ import org.w3c.dom.Node;
 public class MapNode {
     private double latitude;
     private double longitude;
+    private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public double getLatitude() {
         return latitude;
@@ -31,15 +41,19 @@ public class MapNode {
         this.longitude = longitude;
     }
 
-    public MapNode(double latitude, double longitude){
+    public MapNode(double latitude, double longitude, long id){
         this.latitude = latitude;
         this.longitude = longitude;
+        this.id = id;
     }
 
     public static MapNode fromXMLNode(Node node){
         double latitude, longitude;
-        latitude = Double.parseDouble(node.getAttributes().getNamedItem("lat").getNodeValue());
-        longitude = Double.parseDouble(node.getAttributes().getNamedItem("lon").getNodeValue());
-        return new MapNode(latitude, longitude);
+        long id;
+        NamedNodeMap attribs = node.getAttributes();
+        latitude = Double.parseDouble(attribs.getNamedItem("lat").getNodeValue());
+        longitude = Double.parseDouble(attribs.getNamedItem("lon").getNodeValue());
+        id = Long.parseLong(attribs.getNamedItem("id").getNodeValue());
+        return new MapNode(latitude, longitude, id);
     }
 }
