@@ -122,7 +122,8 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     }
 
     public void mouseReleased(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        updateVisibleData();
+        this.repaint();
     }
 
     public void mouseEntered(MouseEvent e) {
@@ -145,6 +146,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         this.mouseDownX = x;
         this.mouseDownY = y;
         updateVisibleData();
+        this.repaint();
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -177,6 +179,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
         this.setLatitude_top(pivotLatitude + viewportHeight/2);
         updateVisibleData();
+        this.repaint();
     }
 
     public void zoomOut(Point pivot){
@@ -193,6 +196,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
         this.setLatitude_top(pivotLatitude + viewportHeight/2);
         updateVisibleData();
+        this.repaint();
     }
 
 // <editor-fold defaultstate="collapsed" desc="Coordinate transformation functions">
