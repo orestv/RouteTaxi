@@ -14,6 +14,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.JPanel;
 
 /**
@@ -22,6 +24,7 @@ import javax.swing.JPanel;
  */
 public class MapCanvas extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener{
 
+    private final double ZOOM_RATE = 0.9;
     private double longitudeLeft = 23.91;
     private double longitudeRight = 24.1;
     private double latitudeBottom = 49.76;
@@ -32,6 +35,8 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     private int mouseX, mouseY;
 
     private MapModel model;
+
+    private ArrayList<MapWay> visibleWays = null;
 
     public MapCanvas(){
         super();
@@ -55,11 +60,51 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
+        renderMap(g);
         double latitude = yToLatitude(mouseY);
         double longitude = xToLongitude(mouseX);
         g.drawString(String.format("(%.6f; %.6f)", latitude, longitude), 10, 10);
     }
 
+    private void renderMap(Graphics g){
+        g.setColor(Color.red);
+        if (visibleWays == null)
+            updateVisibleData();
+        System.out.println(String.format("Ways within the box: %d", visibleWays.size()));
+        Iterator<MapWay> iWay = visibleWays.iterator();
+        int x1, y1, x2, y2;
+        while (iWay.hasNext()){
+            MapWay way = iWay.next();
+            Iterator<MapNode> iNode = way.getNodes().iterator();
+            double lon, lat;
+            if (iNode.hasNext()){
+                MapNode node = iNode.next();
+                lon = node.getLongitude();
+                lat = node.getLatitude();
+            }
+            else
+                continue;
+            while (iNode.hasNext()){
+                MapNode node = iNode.next();
+                x1 = longitudeToX(lon);
+                y1 = latitudeToY(lat);
+                x2 = longitudeToX(node.getLongitude());
+                y2 = latitudeToY(node.getLatitude());
+                g.drawLine(x1, y1, x2, y2);
+            }
+        }
+    }
+
+    private void updateVisibleData(){
+        double left, right, bottom, top;
+        left = getLongitude_left();
+        right = getLongitude_right();
+        bottom = getLatitude_bottom();
+        top = getLatitude_top();
+        visibleWays = model.getWaysWithinBox(left, right, bottom, top);
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="Mouse event handlers">
     public void mouseClicked(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -101,7 +146,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         this.repaint();
         //System.out.println(xToLongitude(e.getX()));
         //System.out.println(yToLatitude(e.getY()));
-    }
+    }// </editor-fold>
 
     public MapModel getModel() {
         return model;
@@ -117,8 +162,8 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         pivotLongitude = xToLongitude((int)pivot.getX());
         double viewportWidth = this.getLongitude_right() - this.getLongitude_left();
         double viewportHeight = this.getLatitude_top() - this.getLatitude_bottom();
-        viewportHeight /= 3;
-        viewportWidth /= 3;
+        viewportHeight *= ZOOM_RATE;
+        viewportWidth *= ZOOM_RATE;
 
         this.setLongitude_left(pivotLongitude - viewportWidth/2);
         this.setLongitude_right(pivotLongitude + viewportWidth/2);
@@ -132,8 +177,8 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         pivotLongitude = xToLongitude((int)pivot.getX());
         double viewportWidth = this.getLongitude_right() - this.getLongitude_left();
         double viewportHeight = this.getLatitude_top() - this.getLatitude_bottom();
-        viewportHeight *= 4./3;
-        viewportWidth *= 4./3;
+        viewportHeight /= ZOOM_RATE;
+        viewportWidth /= ZOOM_RATE;
 
         this.setLongitude_left(pivotLongitude - viewportWidth/2);
         this.setLongitude_right(pivotLongitude + viewportWidth/2);

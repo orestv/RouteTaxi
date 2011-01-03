@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +44,27 @@ public class MapModel {
             MapModel.downloadMap(23.91, 49.76, 24.1, 49.82, strFilename);
         doc = parse(strFilename);
         ways = getWaysFromDocument(doc);
+    }
+
+    public ArrayList<MapWay> getWaysWithinBox(double left, double right, double bottom, double top){
+        ArrayList<MapWay> result = new ArrayList<MapWay>();
+        Iterator<MapWay> iWay = ways.iterator();
+        while (iWay.hasNext())  {
+            MapWay way = iWay.next();
+            Iterator<MapNode> iNode = way.getNodes().iterator();
+            while (iNode.hasNext()){
+                MapNode node = iNode.next();
+                if (node.getLatitude() > bottom
+                        && node.getLatitude() < top
+                        && node.getLongitude() > left
+                        && node.getLongitude() < right){
+                    result.add(way);
+                    break;
+                }
+
+            }
+        }
+        return result;
     }
     
     public static boolean downloadMap(double nLeft, double nBottom, double nRight, double nTop, String strFilename){
@@ -160,12 +182,6 @@ public class MapModel {
         System.out.println(String.format("Found %d nodes in %d - %d = %d milliseconds", nNodeListSize, nMilEnd, nMilStart, (nMilEnd - nMilStart)));
         return true;
          */
-    }
-
-    public static ArrayList<MapNode> getWaysNodes(Node way){
-        ArrayList<MapNode> result = new ArrayList<MapNode>();
-        
-        return result;
     }
 
 }

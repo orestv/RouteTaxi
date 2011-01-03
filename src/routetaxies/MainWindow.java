@@ -23,7 +23,7 @@ public class MainWindow extends JFrame{
     }
 
     private void initGUI(){
-        MapModel m = null;//new MapModel("out.xml");
+        MapModel m = new MapModel("out.xml");
 
         JPanel p = new JPanel(new MigLayout(""));
         MapCanvas cnvMap = new MapCanvas();
