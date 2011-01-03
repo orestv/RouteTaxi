@@ -42,7 +42,7 @@ public class MapModel {
     public MapModel(String strFilename) {
         doc = parse(strFilename);
         if (doc == null) {
-            MapModel.downloadMap(23.91, 49.76, 24.4, 49.82, strFilename);
+            MapModel.downloadMap(23.71, 49.76, 24.4, 49.92, strFilename);
         }
         doc = parse(strFilename);
         ways = getWaysFromDocument(doc);
@@ -86,7 +86,7 @@ public class MapModel {
             while ((c = rdr.read()) != -1) {
                 sb.append((char) c);
                 nTotalRead++;
-                if (nTotalRead % 100 == 0) {
+                if (nTotalRead % 1000 == 0) {
                     System.out.println("Total characters read: " + Integer.toString(nTotalRead));
                 }
             }
