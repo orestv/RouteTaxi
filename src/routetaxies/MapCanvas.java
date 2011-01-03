@@ -15,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import javax.swing.JPanel;
 
@@ -63,6 +64,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         renderMap(g);
         double latitude = yToLatitude(mouseY);
         double longitude = xToLongitude(mouseX);
+        g.setColor(Color.blue);
         g.drawString(String.format("(%.6f; %.6f)", latitude, longitude), 10, 10);
     }
 
@@ -70,9 +72,10 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         g.setColor(Color.red);
         if (visibleWays == null)
             updateVisibleData();
-        System.out.println(String.format("Ways within the box: %d", visibleWays.size()));
+        //System.out.println(String.format("Ways within the box: %d", visibleWays.size()));
         Iterator<MapWay> iWay = visibleWays.iterator();
         int x1, y1, x2, y2;
+        long nTimeStart = Calendar.getInstance().getTimeInMillis();
         while (iWay.hasNext()){
             MapWay way = iWay.next();
             Iterator<MapNode> iNode = way.getNodes().iterator();
@@ -91,8 +94,11 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
                 x2 = longitudeToX(node.getLongitude());
                 y2 = latitudeToY(node.getLatitude());
                 g.drawLine(x1, y1, x2, y2);
+                lon = node.getLongitude();
+                lat = node.getLatitude();
             }
         }
+        System.out.println(String.format("Time spent drawing objects: %d", Calendar.getInstance().getTimeInMillis() - nTimeStart));
     }
 
     private void updateVisibleData(){
@@ -131,13 +137,14 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         int x = e.getX(), y = e.getY();
         double dLongitude = xToLongitude(x) - xToLongitude(this.mouseDownX);
         double dLatitude = yToLatitude(y) - yToLatitude(this.mouseDownY);
-        System.out.println(String.format("(%f, %f)", dLatitude, dLongitude));
+        //System.out.println(String.format("(%f, %f)", dLatitude, dLongitude));
         this.setLatitude_bottom(this.getLatitude_bottom() - dLatitude);
         this.setLatitude_top(this.getLatitude_top() - dLatitude);
         this.setLongitude_left(this.getLongitude_left() - dLongitude);
         this.setLongitude_right(this.getLongitude_right() - dLongitude);
         this.mouseDownX = x;
         this.mouseDownY = y;
+        updateVisibleData();
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -169,6 +176,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         this.setLongitude_right(pivotLongitude + viewportWidth/2);
         this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
         this.setLatitude_top(pivotLatitude + viewportHeight/2);
+        updateVisibleData();
     }
 
     public void zoomOut(Point pivot){
@@ -184,6 +192,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         this.setLongitude_right(pivotLongitude + viewportWidth/2);
         this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
         this.setLatitude_top(pivotLatitude + viewportHeight/2);
+        updateVisibleData();
     }
 
 // <editor-fold defaultstate="collapsed" desc="Coordinate transformation functions">
