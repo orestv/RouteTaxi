@@ -42,7 +42,7 @@ public class MapModel {
     public MapModel(String strFilename) {
         doc = parse(strFilename);
         if (doc == null) {
-            MapModel.downloadMap(23.91, 49.76, 24.1, 49.82, strFilename);
+            MapModel.downloadMap(23.91, 49.76, 24.4, 49.82, strFilename);
         }
         doc = parse(strFilename);
         ways = getWaysFromDocument(doc);
