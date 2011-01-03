@@ -44,6 +44,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
 
     private void init(){
         addMouseMotionListener(this);
+        addMouseListener(this);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setBackground(Color.WHITE);
     }
@@ -63,6 +64,7 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     public void mousePressed(MouseEvent e) {
         this.mouseDownX = e.getX();
         this.mouseDownY = e.getY();
+        System.out.println("Mouse pressed");
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -81,10 +83,13 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         int x = e.getX(), y = e.getY();
         double dLongitude = xToLongitude(x) - xToLongitude(this.mouseDownX);
         double dLatitude = yToLatitude(y) - yToLatitude(this.mouseDownY);
-        this.setLatitude_bottom(this.getLatitude_bottom() + dLatitude);
-        this.setLatitude_top(this.getLatitude_top() + dLatitude);
-        this.setLongitude_left(this.getLongitude_left() + dLongitude);
-        this.setLongitude_right(this.getLongitude_right() + dLongitude);
+        System.out.println(String.format("(%f, %f)", dLatitude, dLongitude));
+        this.setLatitude_bottom(this.getLatitude_bottom() - dLatitude);
+        this.setLatitude_top(this.getLatitude_top() - dLatitude);
+        this.setLongitude_left(this.getLongitude_left() - dLongitude);
+        this.setLongitude_right(this.getLongitude_right() - dLongitude);
+        this.mouseDownX = x;
+        this.mouseDownY = y;
     }
 
     public void mouseMoved(MouseEvent e) {
