@@ -25,11 +25,15 @@ public class MainWindow extends JFrame{
     }
 
     private void initGUI(){
+        MapModel m = new MapModel("out.xml");
+
         JPanel p = new JPanel(new MigLayout(""));
         MapCanvas cnvMap = new MapCanvas();
         JPanel pnlControls = new JPanel();
         JPanel pnlStatus = new JPanel();
         //this.setSize(640, 480);
+
+        cnvMap.setModel(m);
 
         p.add(cnvMap, "w 15cm!, h 15cm!");
         p.add(pnlControls, "w 6cm!, h 100%, wrap");

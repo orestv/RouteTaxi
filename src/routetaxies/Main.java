@@ -20,14 +20,14 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
-                //MainWindow w = new MainWindow();
+                MainWindow w = new MainWindow();
             }
         });
         
         String strFilename = "out.xml";
         //MapModel.download_map(23.91, 49.76, 24.1, 49.82, strFilename);
-        Document doc = MapModel.parse(strFilename);
-        MapModel.getWaysFromDocument(doc);
+        //Document doc = MapModel.parse(strFilename);
+        //MapModel.getWaysFromDocument(doc);
         /*
         if (doc != null) {
             System.out.println(doc.getElementsByTagName("node").getLength());

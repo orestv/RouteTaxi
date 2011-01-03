@@ -29,7 +29,20 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
 
     private int mouseX, mouseY;
 
+    private MapModel model;
+
     public MapCanvas(){
+        super();
+        init();
+    }
+
+    public MapCanvas(MapModel model){
+        super();
+        init();
+        this.model = model;
+    }
+
+    private void init(){
         addMouseMotionListener(this);
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setBackground(Color.WHITE);
@@ -69,6 +82,9 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         double dLongitude = xToLongitude(x) - xToLongitude(this.mouseDownX);
         double dLatitude = yToLatitude(y) - yToLatitude(this.mouseDownY);
         this.setLatitude_bottom(this.getLatitude_bottom() + dLatitude);
+        this.setLatitude_top(this.getLatitude_top() + dLatitude);
+        this.setLongitude_left(this.getLongitude_left() + dLongitude);
+        this.setLongitude_right(this.getLongitude_right() + dLongitude);
     }
 
     public void mouseMoved(MouseEvent e) {
@@ -79,6 +95,13 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         //System.out.println(yToLatitude(e.getY()));
     }
 
+    public MapModel getModel() {
+        return model;
+    }
+
+    public void setModel(MapModel model) {
+        this.model = model;
+    }
 // <editor-fold defaultstate="collapsed" desc="Coordinate transformation functions">
     private double xToLongitude(int x) {
         double result = ((double) x) / getWidth();

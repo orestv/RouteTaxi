@@ -35,12 +35,14 @@ public class MapModel {
     private static String STR_XAPI_URL = "http://www.informationfreeway.org/api/0.6/map?bbox=%2.2f,%2.2f,%2.2f,%2.2f";
 
     Document doc = null;
+    private ArrayList<MapWay> ways = null;
 
     public MapModel(String strFilename){
         doc = parse(strFilename);
         if (doc == null)
             MapModel.downloadMap(23.91, 49.76, 24.1, 49.82, strFilename);
         doc = parse(strFilename);
+        ways = getWaysFromDocument(doc);
     }
     
     public static boolean downloadMap(double nLeft, double nBottom, double nRight, double nTop, String strFilename){
@@ -96,11 +98,11 @@ public class MapModel {
         HashMap<Long, Node> hmapXmlNodes = new HashMap<Long, Node>();
             System.out.println(Calendar.getInstance().getTimeInMillis());
         for (int i = 0; i < xmlNodes.getLength(); i++){
-            /*
+            
             Node n = xmlNodes.item(i);
             Long id = Long.parseLong(n.getAttributes().getNamedItem("id").getNodeValue());
             hmapXmlNodes.put(id, n);
-             */
+             
         }
             System.out.println(Calendar.getInstance().getTimeInMillis());
             System.out.println();
@@ -122,8 +124,10 @@ public class MapModel {
                     N = hmapXmlNodes.get(nNodeId);
 
                     //Node N = doc.getElementById(Long.toString(nNodeId));
-                    MapNode childNode = MapNode.fromXMLNode(N);
-                    mapNodes.add(childNode);
+                    if (N != null){
+                        MapNode childNode = MapNode.fromXMLNode(N);
+                        mapNodes.add(childNode);
+                    }
                 }
 
                 else if(child.getNodeName().equals("tag")){
