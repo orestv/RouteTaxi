@@ -173,11 +173,23 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         double viewportHeight = this.getLatitude_top() - this.getLatitude_bottom();
         viewportHeight *= ZOOM_RATE;
         viewportWidth *= ZOOM_RATE;
+/*
+        if (pivot.getY() < this.getHeight()/2)
+            this.setLatitude_bottom(this.getLatitude_top() - viewportHeight);
+        else
+            this.setLatitude_top(this.getLatitude_bottom() + viewportHeight);
+
+        if (pivot.getX() < this.getWidth()/2)
+            this.setLongitude_right(this.getLongitude_left() + viewportWidth);
+        else
+            this.setLongitude_left(this.getLongitude_right() - viewportWidth);
+ */
 
         this.setLongitude_left(pivotLongitude - viewportWidth/2);
         this.setLongitude_right(pivotLongitude + viewportWidth/2);
         this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
         this.setLatitude_top(pivotLatitude + viewportHeight/2);
+
         updateVisibleData();
         this.repaint();
     }

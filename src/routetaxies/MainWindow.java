@@ -28,16 +28,16 @@ public class MainWindow extends JFrame{
         JPanel p = new JPanel(new MigLayout(""));
         MapCanvas cnvMap = new MapCanvas();
         JPanel pnlControls = new JPanel();
-        JPanel pnlStatus = new JPanel();
-        //this.setSize(640, 480);
+        JPanel pnlStatus = new JPanel();        
 
         cnvMap.setModel(m);
 
-        p.add(cnvMap, "w 15cm!, h 15cm!");
+        p.add(cnvMap, "w 90%!, h 90%");
         p.add(pnlControls, "w 6cm!, h 100%, wrap");
-        p.add(pnlStatus, "span, w 100%");
+        p.add(pnlStatus, "span, w 100%, h 2cm!");
 
         this.add(p);
+        this.setPreferredSize(new Dimension(800, 600));
         this.pack();
         Dimension dimScreen = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation((int) ((dimScreen.getWidth() - this.getWidth()) / 2),
