@@ -78,7 +78,7 @@ public class MapModel {
             URL u = new URL(strUrl);
             InputStream is = null;
             is = u.openStream();
-            int nChunkSize = 0, nTotalRead = 0;
+            int nTotalRead = 0;
             int c;
             Reader rdr = new InputStreamReader(is, "UTF-8");
             Writer wr = new BufferedWriter(new FileWriter(strFilename, false));
@@ -145,7 +145,7 @@ public class MapModel {
 
     }
 
-    public ArrayList<MapWay> getWaysFromDocument(Document doc) {
+    private ArrayList<MapWay> getWaysFromDocument(Document doc) {
         NodeList xmlWays = doc.getElementsByTagName("way");
         ArrayList<MapWay> lsWays = new ArrayList<MapWay>();
         NodeList xmlNodes = doc.getElementsByTagName("node");
