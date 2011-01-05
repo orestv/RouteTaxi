@@ -42,9 +42,9 @@ public class MapModel {
     public MapModel(String strFilename) {
         doc = parse(strFilename);
         if (doc == null) {
-            MapModel.downloadMap(23.71, 49.76, 24.4, 49.92, strFilename);
+            MapModel.downloadMap(23.71, 49.66, 24.6, 50.10, strFilename);
+            doc = parse(strFilename);
         }
-        doc = parse(strFilename);
         ways = getWaysFromDocument(doc);
     }
 
@@ -134,9 +134,11 @@ public class MapModel {
 
         @Override
         public void start(){
+            Node n;
+            Long id;
             for (int nNode = nStart; nNode < nEnd; nNode++){
-                Node n = xmlNodes.item(nNode);
-                Long id = Long.parseLong(n.getAttributes().getNamedItem("id").getNodeValue());
+                n = xmlNodes.item(nNode);
+                id = Long.parseLong(n.getAttributes().getNamedItem("id").getNodeValue());
                 synchronized(hmapNodes){
                     hmapNodes.put(id, n);
                 }
@@ -179,7 +181,10 @@ public class MapModel {
         System.out.println(Calendar.getInstance().getTimeInMillis());
         System.out.println();
 
+        boolean bHighway;
+
         for (int i = 0; i < xmlWays.getLength(); i++) {
+            bHighway = false;
             Node xmlWay = xmlWays.item(i);
             NodeList children = xmlWay.getChildNodes();
             ArrayList<MapNode> mapNodes = new ArrayList<MapNode>();
@@ -208,9 +213,13 @@ public class MapModel {
                     if (key.equals("name")) {
                         name = value;
                     }
+                    else if (key.equals("highway")){
+                        bHighway = true;
+                    }
                 }
             }
-            lsWays.add(new MapWay(id, name, mapNodes));
+            if (bHighway)
+                lsWays.add(new MapWay(id, name, mapNodes));
         }
 
         return lsWays;
