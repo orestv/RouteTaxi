@@ -17,7 +17,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -214,7 +213,16 @@ public class MapModel {
                         name = value;
                     }
                     else if (key.equals("highway")){
-                        bHighway = true;
+                        if (value.equals("pedestrian")){
+                            bHighway = false;
+                            continue;
+                        }
+                        else
+                            bHighway = true;
+                    }
+                    else if (key.equals("railway")){
+                        bHighway = false;
+                        continue;
                     }
                 }
             }
