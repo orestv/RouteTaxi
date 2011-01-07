@@ -165,59 +165,31 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
         this.model = model;
     }
 
-    public void zoomIn(Point pivot){
+    public void zoom(Point pivot, int direction){
         double pivotLatitude, pivotLongitude;
         pivotLatitude = yToLatitude((int)pivot.getY());
         pivotLongitude = xToLongitude((int)pivot.getX());
 
-        double dLatitudeTop = (this.getLatitude_top() - pivotLatitude) * ZOOM_RATE;
-        double dLatitudeBottom = (this.getLatitude_bottom() - pivotLatitude) * ZOOM_RATE;
-        double dLongitudeLeft = (this.getLongitude_left() - pivotLongitude) * ZOOM_RATE;
-        double dLongitudeRight = (this.getLongitude_right() - pivotLongitude) * ZOOM_RATE;
+        double zoom_rate;
+        if (direction < 0)
+            zoom_rate = ZOOM_RATE;
+        else
+            zoom_rate = 1./ZOOM_RATE;
+
+        double dLatitudeTop = (this.getLatitude_top() - pivotLatitude) * zoom_rate;
+        double dLatitudeBottom = (this.getLatitude_bottom() - pivotLatitude) * zoom_rate;
+        double dLongitudeLeft = (this.getLongitude_left() - pivotLongitude) * zoom_rate;
+        double dLongitudeRight = (this.getLongitude_right() - pivotLongitude) * zoom_rate;
 
         this.setLatitude_top(pivotLatitude + dLatitudeTop);
         this.setLatitude_bottom(pivotLatitude + dLatitudeBottom);
         this.setLongitude_left(pivotLongitude + dLongitudeLeft);
         this.setLongitude_right(pivotLongitude + dLongitudeRight);
 
-/*
-        if (pivot.getY() < this.getHeight()/2)
-            this.setLatitude_bottom(this.getLatitude_top() - viewportHeight);
-        else
-            this.setLatitude_top(this.getLatitude_bottom() + viewportHeight);
-
-        if (pivot.getX() < this.getWidth()/2)
-            this.setLongitude_right(this.getLongitude_left() + viewportWidth);
-        else
-            this.setLongitude_left(this.getLongitude_right() - viewportWidth);
-
-        this.setLongitude_left(pivotLongitude - viewportWidth/2);
-        this.setLongitude_right(pivotLongitude + viewportWidth/2);
-        this.setLatitude_bottom(pivotLatitude - viewportHeight/2);
-        this.setLatitude_top(pivotLatitude + viewportHeight/2);
- */
-
         updateVisibleData();
-        this.repaint();
+        repaint();
     }
 
-    public void zoomOut(Point pivot){
-        double pivotLatitude, pivotLongitude;
-        pivotLatitude = yToLatitude((int)pivot.getY());
-        pivotLongitude = xToLongitude((int)pivot.getX());
-
-        double dLatitudeTop = (this.getLatitude_top() - pivotLatitude) / ZOOM_RATE;
-        double dLatitudeBottom = (this.getLatitude_bottom() - pivotLatitude) / ZOOM_RATE;
-        double dLongitudeLeft = (this.getLongitude_left() - pivotLongitude) / ZOOM_RATE;
-        double dLongitudeRight = (this.getLongitude_right() - pivotLongitude) / ZOOM_RATE;
-
-        this.setLatitude_top(pivotLatitude + dLatitudeTop);
-        this.setLatitude_bottom(pivotLatitude + dLatitudeBottom);
-        this.setLongitude_left(pivotLongitude + dLongitudeLeft);
-        this.setLongitude_right(pivotLongitude + dLongitudeRight);
-        updateVisibleData();
-        this.repaint();
-    }
 
 // <editor-fold defaultstate="collapsed" desc="Coordinate transformation functions">
     private double xToLongitude(int x) {
@@ -287,9 +259,6 @@ public class MapCanvas extends JPanel implements MouseListener, MouseMotionListe
     }// </editor-fold>
 
     public void mouseWheelMoved(MouseWheelEvent e) {
-        if (e.getWheelRotation() < 0)
-            zoomIn(new Point(e.getX(), e.getY()));
-        else
-            zoomOut(new Point(e.getX(), e.getY()));
+        zoom(e.getPoint(), e.getWheelRotation());
     }
 }
